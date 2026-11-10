@@ -105,7 +105,7 @@ class BookView extends View {
     const sel = document.querySelector('#rent-book');
     sel.innerHTML = books.map(b => {
       const a = availFn(b.id);
-      return `<option value="${b.id}" ${a <= 0 ? 'disabled' : ''}>${this._esc(b.title)} (${a} avail)</option>`;
+      return `<option value="${b.id}" ${a <= 0 ? 'disabled' : ''}>${this._esc(b.title)} - ₱${b.pricePerDay.toFixed(2)}/day (${a} avail)</option>`;
     }).join('');
   }
 }

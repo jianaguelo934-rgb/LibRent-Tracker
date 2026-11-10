@@ -26,7 +26,7 @@ class RentalView extends View {
       <li class="item">
         <div class="item-info">
           <span class="title">${this._esc(r.customer)} — ${this._esc(r.bookTitle)}</span>
-          <span class="meta">${r.days} day(s) from ${r.startDate}${r.returned ? ' · returned ' + r.returnDate + ' · fee ₱' + r.fee.toFixed(2) : ''}</span>
+          <span class="meta">₱${r.bookPrice.toFixed(2)}/day · ${r.days} day(s) from ${r.startDate}${r.returned ? ' · returned ' + r.returnDate + ' · fee ₱' + r.fee.toFixed(2) : ''}</span>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
           <span class="badge ${r.returned ? 'returned' : 'rented'}">${r.returned ? 'Returned' : 'Active'}</span>

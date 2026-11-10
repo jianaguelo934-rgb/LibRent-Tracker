@@ -29,7 +29,7 @@ const refreshController = () => {
 
   const rentals = model.getRentals().map((r) => {
     const book = model.getBook(r.bookId);
-    return { ...r, bookTitle: book ? book.title : "Unknown" };
+    return { ...r, bookTitle: book ? book.title : "Unknown", bookPrice: book ? book.pricePerDay : 0 };
   }).filter(r =>
     r.customer.toLowerCase().includes(rentalSearch.toLowerCase()) ||
     r.bookTitle.toLowerCase().includes(rentalSearch.toLowerCase())
