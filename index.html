@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibRent Tracker</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>📖 LibRent Tracker</h1>
+      <p>Manage books, rentals, and finances</p>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="catalog">Catalog</button>
+      <button class="tab-btn" data-tab="rentals">Rentals</button>
+      <button class="tab-btn" data-tab="finance">Finance</button>
+    </nav>
+
+    <div id="error-container" class="error-global"></div>
+
+    <main class="main">
+      <!-- Catalog Tab -->
+      <section class="tab-panel active" data-panel="catalog">
+        <div class="card">
+          <h2>Add Book</h2>
+          <form id="book-form" novalidate>
+            <input type="hidden" id="book-id" />
+            <div class="form-row">
+              <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="book-title" placeholder="Book title" />
+              </div>
+              <div class="form-group">
+                <label>Author</label>
+                <input type="text" id="book-author" placeholder="Author" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Copies</label>
+                <input type="number" id="book-copies" min="1" value="1" />
+              </div>
+              <div class="form-group">
+                <label>Price / Day</label>
+                <input type="number" id="book-price" min="0" step="0.01" value="20.00" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" id="book-submit" class="btn btn-primary">Add Book</button>
+              <button type="button" id="book-cancel" class="btn btn-secondary" hidden>Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>Book Catalog</h2>
+          <input type="search" id="book-search" class="search-input" placeholder="Search books by title or author..." />
+          <ul id="book-list" class="item-list"></ul>
+          <p id="book-empty" class="empty-state" hidden>No books found.</p>
+        </div>
+      </section>
+
+      <!-- Rentals Tab -->
+      <section class="tab-panel" data-panel="rentals">
+        <div class="card">
+          <h2>Rent a Book</h2>
+          <form id="rental-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="rent-customer" placeholder="Customer" />
+              </div>
+              <div class="form-group">
+                <label>Book</label>
+                <select id="rent-book"></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Days</label>
+                <input type="number" id="rent-days" min="1" value="1" />
+              </div>
+              <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" id="rent-start" />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Rental</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>Rentals</h2>
+          <input type="search" id="rental-search" class="search-input" placeholder="Search rentals by customer or book..." />
+          <ul id="rental-list" class="item-list"></ul>
+          <p id="rental-empty" class="empty-state" hidden>No rentals found.</p>
+        </div>
+      </section>
+
+      <!-- Finance Tab -->
+      <section class="tab-panel" data-panel="finance">
+        <div class="card">
+          <h2>Finance Summary</h2>
+          <div id="finance-summary" class="stats-grid"></div>
+        </div>
+
+        <div class="card">
+          <h2>Add Expense</h2>
+          <form id="expense-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="exp-desc" placeholder="e.g. Shelf repair" />
+              </div>
+              <div class="form-group">
+                <label>Amount</label>
+                <input type="number" id="exp-amount" min="0" step="0.01" />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Expense</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>Expenses</h2>
+          <ul id="expense-list" class="item-list"></ul>
+          <p id="expense-empty" class="empty-state" hidden>No expenses yet.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Book Confirmation Modal -->
+  <div id="book-confirm-overlay" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>Confirm Add Book</h3>
+      <div id="book-confirm-details" class="modal-details"></div>
+      <div class="modal-actions">
+        <button id="book-confirm-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="book-confirm-ok" class="btn btn-primary">Confirm & Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rental Confirmation Modal -->
+  <div id="rental-confirm-overlay" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>Confirm Rental</h3>
+      <div id="rental-confirm-details" class="modal-details"></div>
+      <div class="modal-actions">
+        <button id="rental-confirm-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="rental-confirm-ok" class="btn btn-primary">Confirm & Rent</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/controller.js"></script>
+</body>
+</html>
