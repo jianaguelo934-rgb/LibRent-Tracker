@@ -29,12 +29,26 @@ const refreshController = () => {
 
   const rentals = model.getRentals().map((r) => {
     const book = model.getBook(r.bookId);
-    return { ...r, bookTitle: book ? book.title : "Unknown", bookPrice: book ? book.pricePerDay : 0 };
+    return { ...r, bookTitle: book ? book.title : "Unknown", bookPrice: book ? book.pricePerDay : 0, dueDate: model.dueDate(r), overdueDays: model.overdueDays(r), isOverdue: model.isOverdue(r) };
   }).filter(r =>
     r.customer.toLowerCase().includes(rentalSearch.toLowerCase()) ||
     r.bookTitle.toLowerCase().includes(rentalSearch.toLowerCase())
   );
   rentalView.render(rentals);
+
+  // Overdue alert banner
+  const overdueList = rentals.filter(r => !r.returned && r.isOverdue);
+  const banner = document.querySelector('#overdue-banner');
+  if (banner) {
+    if (overdueList.length > 0) {
+      banner.hidden = false;
+      banner.innerHTML = `⚠️ ${overdueList.length} overdue rental${overdueList.length > 1 ? 's' : ''}: ` +
+        overdueList.map(r => `${r.customer} (${r.bookTitle}, ${r.overdueDays} day${r.overdueDays > 1 ? 's' : ''} late)`).join('; ') + '.';
+    } else {
+      banner.hidden = true;
+      banner.innerHTML = '';
+    }
+  }
 
   financeView.render(model.getExpenses());
   financeView.renderSummary({ ...model.getFinance(), count: model.getExpenses().length });

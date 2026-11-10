@@ -37,9 +37,12 @@ const seed = () => {
 
   // Sample rentals
   const today = new Date().toISOString().slice(0, 10);
+  const past = new Date(); past.setDate(past.getDate() - 5);
+  const pastDate = past.toISOString().slice(0, 10);
   state.rentals = [
-    { id: genId(), bookId: state.books[0].id, customer: 'Juan Dela Cruz', days: 3, startDate: today, returned: false, returnDate: null, fee: 0 },
-    { id: genId(), bookId: state.books[2].id, customer: 'Maria Santos', days: 2, startDate: today, returned: true, returnDate: today, fee: 2 * 10.00 },
+    { id: genId(), bookId: state.books[0].id, customer: 'Juan Dela Cruz', days: 3, startDate: today, returned: false, returnDate: null, fee: 0, lateFee: 0, overdueDays: 0 },
+    { id: genId(), bookId: state.books[2].id, customer: 'Maria Santos', days: 2, startDate: today, returned: true, returnDate: today, fee: 2 * 10.00, lateFee: 0, overdueDays: 0 },
+    { id: genId(), bookId: state.books[1].id, customer: 'Pedro Penduko', days: 2, startDate: pastDate, returned: false, returnDate: null, fee: 0, lateFee: 0, overdueDays: 0 },
   ];
 
   // Sample expense
@@ -94,19 +97,39 @@ export const getRentals = () => [...state.rentals];
 
 export const rentBook = ({ bookId, customer, days, startDate }) => {
   if (availableCopies(bookId) <= 0) return null;
-  const rental = { id: genId(), bookId, customer, days: Number(days), startDate, returned: false, returnDate: null, fee: 0 };
+  const rental = { id: genId(), bookId, customer, days: Number(days), startDate, returned: false, returnDate: null, fee: 0, lateFee: 0, overdueDays: 0 };
   state.rentals.push(rental);
   save();
   return rental;
 };
 
+export const dueDate = (r) => {
+  const d = new Date(r.startDate + 'T00:00:00');
+  d.setDate(d.getDate() + Number(r.days));
+  return d.toISOString().slice(0, 10);
+};
+
+export const overdueDays = (r) => {
+  if (r.returned) return 0;
+  const due = new Date(dueDate(r) + 'T00:00:00');
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const diff = Math.floor((today - due) / 86400000);
+  return diff > 0 ? diff : 0;
+};
+
+export const isOverdue = (r) => overdueDays(r) > 0;
+
 export const returnBook = (id) => {
   const r = state.rentals.find(x => x.id === id);
   if (!r || r.returned) return null;
   const book = getBook(r.bookId);
+  const late = overdueDays(r);
+  const price = book ? book.pricePerDay : 0;
   r.returned = true;
   r.returnDate = new Date().toISOString().slice(0, 10);
-  r.fee = r.days * (book ? book.pricePerDay : 0);
+  r.overdueDays = late;
+  r.lateFee = late * price;
+  r.fee = r.days * price + r.lateFee;
   save();
   return r;
 };

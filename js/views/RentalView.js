@@ -26,10 +26,10 @@ class RentalView extends View {
       <li class="item">
         <div class="item-info">
           <span class="title">${this._esc(r.customer)} — ${this._esc(r.bookTitle)}</span>
-          <span class="meta">₱${r.bookPrice.toFixed(2)}/day · ${r.days} day(s) from ${r.startDate}${r.returned ? ' · returned ' + r.returnDate + ' · fee ₱' + r.fee.toFixed(2) : ''}</span>
+          <span class="meta">₱${r.bookPrice.toFixed(2)}/day · ${r.days} day(s) from ${r.startDate} · due ${r.dueDate}${r.returned ? ' · returned ' + r.returnDate + ' · fee ₱' + r.fee.toFixed(2) + (r.lateFee ? ' (incl. ₱' + r.lateFee.toFixed(2) + ' late fee)' : '') : (r.isOverdue ? ' · overdue by ' + r.overdueDays + ' day(s)' : '')}</span>
         </div>
         <div style="display:flex;gap:8px;align-items:center;">
-          <span class="badge ${r.returned ? 'returned' : 'rented'}">${r.returned ? 'Returned' : 'Active'}</span>
+          <span class="badge ${r.returned ? 'returned' : (r.isOverdue ? 'overdue' : 'rented')}">${r.returned ? 'Returned' : (r.isOverdue ? 'Overdue' : 'Active')}</span>
           ${!r.returned ? `<button class="btn btn-success" data-action="return" data-id="${r.id}">Return</button>` : ''}
           <button class="btn btn-danger" data-action="delete-rental" data-id="${r.id}">Delete</button>
         </div>
